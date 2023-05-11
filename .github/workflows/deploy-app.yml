@@ -16,7 +16,7 @@ jobs:
           pip install --upgrade pip
           pip install awscli
           pip install -r requirements.txt
-      - name: Package SAM Application
+      - name: start building application
         run: |
           sam build   
       - name: Deploy SAM Application
