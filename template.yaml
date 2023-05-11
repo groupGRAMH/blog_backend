@@ -19,12 +19,26 @@ Resources:
       Runtime: python3.10
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref BlogTable
       Events:
         HelloWorld:
           Type: Api 
           Properties:
             Path: /hello
             Method: get
+
+  BlogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      TableName: BlogTable
 
 Outputs:
   HelloWorldApi:
@@ -36,3 +50,6 @@ Outputs:
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt HelloWorldFunctionRole.Arn
+  BlogTable:
+    Description: "DynamoDB table ARN"
+    Value: !GetAtt BlogTable.Arn
