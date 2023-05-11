@@ -1,9 +1,7 @@
 name: SAM Deploy
-
 on:
   push:
-    branches-ignore:
-    - '*'
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
