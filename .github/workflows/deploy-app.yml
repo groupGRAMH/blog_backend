@@ -1,0 +1,27 @@
+name: SAM Deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install Dependencies
+        run: |
+          pip install awscli
+          pip install -r requirements.txt
+      - name: Package SAM Application
+        run: |
+          sam build
+          sam package --output-template-file packaged.yml --s3-bucket <your-s3-bucket-name>
+      - name: Deploy SAM Application
+        run: |
+          sam deploy --template-file packaged.yml --stack-name <your-stack-name> --capabilities CAPABILITY_IAM
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
