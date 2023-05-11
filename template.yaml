@@ -29,24 +29,6 @@ Resources:
             Path: /hello
             Method: get
 
-  DeleteFunction:
-    Type: AWS::Serverless::Function 
-    Properties:
-      CodeUri: myfunctions/
-      Handler: delete_blog.delete_handler
-      Runtime: python3.10
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref BlogTable
-      Events:
-        HelloWorld:
-          Type: Api 
-          Properties:
-            Path: /delete
-            Method: delete
-            
   BlogTable:
     Type: AWS::DynamoDB::Table
     Properties:
