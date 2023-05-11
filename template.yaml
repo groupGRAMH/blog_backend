@@ -38,6 +38,9 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
       TableName: BlogTable
 
 Outputs:
