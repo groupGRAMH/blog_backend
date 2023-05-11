@@ -13,8 +13,10 @@ jobs:
           python-version: '3.10'
       - name: Install Dependencies
         run: |
+          pip install --upgrade pip
           pip install awscli
           pip install -r requirements.txt
+          
       - name: Package SAM Application
         run: |
           sam build
