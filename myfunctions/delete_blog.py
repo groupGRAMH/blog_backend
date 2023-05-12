@@ -8,6 +8,6 @@ def delete_handler(event, context):
     id=event['id'] # this will delete row with partition key
     try:
         response=table.delete_item(Key={"id":id})
-        return "donee"
+        return "Done"
     except:
         raise
