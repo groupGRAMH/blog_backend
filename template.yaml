@@ -11,29 +11,7 @@ Globals:
     Timeout: 3
 
 Resources:
-  MyFunctionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: "/"
-      Policies:
-        - PolicyName: CRUDPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:GetItem
-                  - dynamodb:PutItem
-                  - dynamodb:UpdateItem
-                  - dynamodb:DeleteItem
-                Resource: !GetAtt BlogTable.Arn
+  
 
   createFunction:
     Type: AWS::Serverless::Function 
@@ -60,7 +38,6 @@ Resources:
       CodeUri: myfunctions/
       Handler: delete_blog.lambda_handler
       Runtime: python3.10
-      Role: !GetAtt MyFunctionRole.Arn
       Architectures:
         - x86_64
       Environment:
