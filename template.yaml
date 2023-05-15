@@ -19,7 +19,6 @@ Resources:
       CodeUri: myfunctions/
       Handler: create_blog.lambda_handler
       Runtime: python3.10
-      Role: !GetAtt MyFunctionRole.Arn
       Architectures:
         - x86_64
       Environment:
@@ -56,7 +55,6 @@ Resources:
       CodeUri: myfunctions/
       Handler: get_blogs.lambda_handler
       Runtime: python3.10
-      Role: !GetAtt MyFunctionRole.Arn
       Architectures:
         - x86_64
       Environment:
@@ -75,7 +73,6 @@ Resources:
       CodeUri: myfunctions/
       Handler: filter_search.lambda_handler
       Runtime: python3.10
-      Role: !GetAtt MyFunctionRole.Arn
       Architectures:
         - x86_64
       Environment:
@@ -94,7 +91,6 @@ Resources:
       CodeUri: myfunctions/
       Handler: update_blog.lambda_handler
       Runtime: python3.10
-      Role: !GetAtt MyFunctionRole.Arn
       Architectures:
         - x86_64
       Environment:
