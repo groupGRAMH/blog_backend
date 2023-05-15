@@ -51,8 +51,8 @@ Resources:
         HelloWorld:
           Type: Api 
           Properties:
-            Path: /hello
-            Method: get
+            Path: /create
+            Method: POST
 
   deleteFunction:
     Type: AWS::Serverless::Function 
@@ -70,8 +70,8 @@ Resources:
         HelloWorld:
           Type: Api 
           Properties:
-            Path: /hello
-            Method: get
+            Path: /delete
+            Method: DELETE
   
   getFunction:
     Type: AWS::Serverless::Function 
@@ -89,7 +89,7 @@ Resources:
         HelloWorld:
           Type: Api 
           Properties:
-            Path: /hello
+            Path: /get_all
             Method: get
 
   filterFunction:
@@ -108,7 +108,7 @@ Resources:
         HelloWorld:
           Type: Api 
           Properties:
-            Path: /hello
+            Path: /filter
             Method: get
   
   updateFunction:
@@ -127,8 +127,8 @@ Resources:
         HelloWorld:
           Type: Api 
           Properties:
-            Path: /hello
-            Method: get
+            Path: /update
+            Method: PUT
 
   BlogTable:
     Type: AWS::DynamoDB::Table
