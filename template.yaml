@@ -5,19 +5,16 @@ Description: >
 
   Sample SAM Template for python
 
-
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-  
-
   createFunction:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: myfunctions/
-      Handler: create_blog.lambda_handler
+      Handler: create_blog.create_handler
       Runtime: python3.10
       Architectures:
         - x86_64
@@ -47,7 +44,7 @@ Resources:
         Variables:
           TABLE_NAME: !Ref BlogTable
       Events:
-        HelloWorld:
+        blog:
           Type: Api 
           Properties:
             Path: /delete
@@ -73,7 +70,7 @@ Resources:
           Type: Api 
           Properties:
             Path: /get_all
-            Method: get
+            Method: GET
 
   filterFunction:
     Type: AWS::Serverless::Function 
@@ -95,7 +92,7 @@ Resources:
           Type: Api 
           Properties:
             Path: /filter
-            Method: get
+            Method: GET
   
   updateFunction:
     Type: AWS::Serverless::Function 
@@ -133,7 +130,6 @@ Resources:
         WriteCapacityUnits: 2
       TableName: BlogTable
 
-    
 Outputs:
   BlogTable:
     Description: "DynamoDB table ARN"

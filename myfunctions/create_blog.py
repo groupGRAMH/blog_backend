@@ -2,45 +2,43 @@ import json
 import os
 import boto3
 
-dynamodb_table_name = os.environ['BlogTable']
+dynamodb_table_name = os.environ['MY_DATABASE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(dynamodb_table_name)
 
-def lambda_handler(event, context):
-    http_method = event['httpMethod']
-    path = event['path']
+def create_handler(event, context):
+    if event['httpMethod'] != 'POST':
+        raise Exception(f"postMethod only accepts POST method, you tried: {event['httpMethod']} method.")
     
-    if http_method == 'POST' and path == '/create':
-        try:
-            insert_blog(json.loads(event['body']))
-            response = {
-                'statusCode': 200,
-                'body': json.dumps({
-                    'Operation': 'SAVE',
-                    'Message': 'SUCCESS',
-                    'Item': json.loads(event['body'])
-                })
-            }
-        except Exception as e:
-            response = {
-                'statusCode': 500,
-                'body': json.dumps({
-                    'error': str(e)
-                })
-            }
-    else:
-        response = {
-            'statusCode': 404,
-            'body': json.dumps({
-                'error': 'NotFound'
-            })
+    # All log statements are written to CloudWatch
+    print('received:', event)
+    
+    # Get info from the body of the request
+    body = json.loads(event['body'])
+    id = body['id']
+    name = body['name']
+    surname = body['surname']
+    
+    params = {
+        'TableName': dynamodb_table_name,
+        'Item': {
+            'id': id,
+            'name': name,
+            'surname': surname
         }
+    }
     
-    return response
-
-def insert_blog(request_body):
     try:
-        table.put_item(Item=request_body)
+        table.put_item(Item=params['Item'])
+        print("Success - item added or updated")
     except Exception as e:
-        # Custom error handling
-        raise Exception('Custom error handling here: ' + str(e))
+        print("Error:", str(e))
+    
+    response = {
+        'statusCode': 200,
+        'body': json.dumps(body)
+    }
+    
+    # All log statements are written to CloudWatch
+    print(f"response from: {event['path']} statusCode: {response['statusCode']} body: {response['body']}")
+    return response

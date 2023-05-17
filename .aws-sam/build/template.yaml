@@ -9,36 +9,139 @@ Globals:
   Function:
     Timeout: 3
 Resources:
-  HelloWorldFunction:
+  createFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: HelloWorldFunction
-      Handler: app.lambda_handler
+      CodeUri: createFunction
+      Handler: create_blog.lambda_handler
       Runtime: python3.10
       Architectures:
       - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BlogTable
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: BlogTable
       Events:
         HelloWorld:
           Type: Api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /create
+            Method: POST
     Metadata:
-      SamResourceId: HelloWorldFunction
+      SamResourceId: createFunction
+  deleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: deleteFunction
+      Handler: delete_blog.lambda_handler
+      Runtime: python3.10
+      Architectures:
+      - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: BlogTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /delete
+            Method: DELETE
+    Metadata:
+      SamResourceId: deleteFunction
+  getFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: getFunction
+      Handler: get_blogs.lambda_handler
+      Runtime: python3.10
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BlogTable
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: BlogTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /get_all
+            Method: GET
+    Metadata:
+      SamResourceId: getFunction
+  filterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: filterFunction
+      Handler: filter_search.lambda_handler
+      Runtime: python3.10
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BlogTable
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: BlogTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /filter
+            Method: GET
+    Metadata:
+      SamResourceId: filterFunction
+  updateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: updateFunction
+      Handler: update_blog.lambda_handler
+      Runtime: python3.10
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BlogTable
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: BlogTable
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /update
+            Method: PUT
+    Metadata:
+      SamResourceId: updateFunction
+  BlogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+      TableName: BlogTable
 Outputs:
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
+  BlogTable:
+    Description: DynamoDB table ARN
     Value:
       Fn::GetAtt:
-      - HelloWorldFunction
-      - Arn
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value:
-      Fn::GetAtt:
-      - HelloWorldFunctionRole
+      - BlogTable
       - Arn
