@@ -1,49 +1,46 @@
-import boto3
 import json
-from custom_encoder import CustomEncoder
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+import os
+import boto3
 
-dynamodbTableName = 'BlogTable'
+dynamodb_table_name = os.environ['BlogTable']
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(dynamodbTableName)
-
-postMethod = 'POST'
-blogPath = '/blog'
+table = dynamodb.Table(dynamodb_table_name)
 
 def lambda_handler(event, context):
-    logger.info(event)
-    httpMethod = event['httpMethod']
+    http_method = event['httpMethod']
     path = event['path']
-    if httpMethod == postMethod and path == blogPath:
-        response = insertBlog(json.loads(event['body']))
+    
+    if http_method == 'POST' and path == '/create':
+        try:
+            insert_blog(json.loads(event['body']))
+            response = {
+                'statusCode': 200,
+                'body': json.dumps({
+                    'Operation': 'SAVE',
+                    'Message': 'SUCCESS',
+                    'Item': json.loads(event['body'])
+                })
+            }
+        except Exception as e:
+            response = {
+                'statusCode': 500,
+                'body': json.dumps({
+                    'error': str(e)
+                })
+            }
     else:
-        response = buildResponse(404, 'NotFound')
+        response = {
+            'statusCode': 404,
+            'body': json.dumps({
+                'error': 'NotFound'
+            })
+        }
     
     return response
 
-def insertBlog(requestBody):
+def insert_blog(request_body):
     try:
-        table.put_item(Item=requestBody)
-        body = {
-            'Operation': 'SAVE',
-            'Message': 'SUCCESS',
-            'Item' : requestBody
-        }
-        return buildResponse(200, body)
-    except:
-        logger.exception('Do custom error handlin here')
-
-
-def buildResponse(statusCode, body=None):
-    response = {
-        'statusCode': statusCode,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-            }
-        }
-    if body is not None:
-        response['body'] = json.dumps(body, cls=CustomEncoder)
-    return response
+        table.put_item(Item=request_body)
+    except Exception as e:
+        # Custom error handling
+        raise Exception('Custom error handling here: ' + str(e))
