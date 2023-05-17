@@ -5,14 +5,14 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-dynamodbTableName = 'simple_table'
+dynamodbTableName = 'BlogTable'
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(dynamodbTableName)
 
 getMethod = 'GET'
 getBlogPath = '/blog'
 
-def lambda_handler(event, context):
+def getall_handler(event, context):
     logger.info(event)
     httpMethod = event['httpMethod']
     path = event['path']
