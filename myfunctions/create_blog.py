@@ -2,7 +2,7 @@ import json
 import os
 import boto3
 
-dynamodb_table_name = os.environ['MY_DATABASE']
+dynamodb_table_name = os.environ['BlogTable']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(dynamodb_table_name)
 
