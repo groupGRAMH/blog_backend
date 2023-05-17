@@ -93,6 +93,10 @@ Resources:
       Runtime: python3.10
       Architectures:
         - x86_64
+      Policies:
+        # Give Create/Read/Update/Delete P
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BlogTable
       Environment:
         Variables:
           TABLE_NAME: !Ref BlogTable
