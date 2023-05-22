@@ -102,7 +102,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: myfunctions/
-      Handler: update_blog.lambda_handler
+      Handler: update_blog.update_handler
       Runtime: python3.10
       Architectures:
         - x86_64
