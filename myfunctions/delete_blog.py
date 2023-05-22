@@ -10,7 +10,16 @@ def delete_handler(event, context):
         raise Exception(f"deleteMethod only accepts DELETE method, you tried: {event['httpMethod']} method.")
 
     # Parse the request body
-    body = json.loads(event['body'])
+    try:
+        body = json.loads(event['body'])
+        print("Parsed request body:", body)
+    except json.JSONDecodeError as e:
+        print("Error parsing request body:", str(e))
+        response = {
+            'statusCode': 400,
+            'body': json.dumps({'error': 'Invalid request body'})
+        }
+        return response
 
     # Check if the item ID is present in the request body
     if 'id' not in body:
@@ -45,6 +54,5 @@ def delete_handler(event, context):
         'body': json.dumps({'message': 'Item deleted successfully'})
     }
 
-  
     print(f"response from: {event['path']} statusCode: {response['statusCode']} body: {response['body']}")
     return response
