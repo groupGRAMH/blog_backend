@@ -54,7 +54,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: myfunctions/
-      Handler: get_blogs.getall_handler
+      Handler: get_blogs.get_handler
       Runtime: python3.10
       Architectures:
         - x86_64
