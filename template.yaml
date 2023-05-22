@@ -36,7 +36,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: myfunctions/
-      Handler: delete_blog.lambda_handler
+      Handler: delete_blog.delete_handler
       Runtime: python3.10
       Architectures:
         - x86_64

@@ -28,6 +28,6 @@ def get_handler(event, context):
         'body': json.dumps(body)
     }
 
-    # All log statements are written to CloudWatch
+  
     print(f"response from: {event['path']} statusCode: {response['statusCode']} body: {response['body']}")
     return response
