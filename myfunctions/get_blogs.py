@@ -1,53 +1,29 @@
-import boto3
 import json
-from custom_encoder import CustomEncoder 
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+import boto3
 
-dynamodbTableName = 'BlogTable'
+dynamodb_table_name = 'BlogTable'
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(dynamodbTableName)
+table = dynamodb.Table(dynamodb_table_name)
 
-getMethod = 'GET'
-getBlogPath = '/blog'
+def get_handler(event, context):
+    if event['httpMethod'] != 'GET':
+        raise Exception(f"getMethod only accepts GET method, you tried: {event['httpMethod']} method.")
 
-def getall_handler(event, context):
-    logger.info(event)
-    httpMethod = event['httpMethod']
-    path = event['path']
-    if httpMethod == getMethod and path == getBlogPath:
-        response = getBlogs()
-    else:
-        response = buildResponse(404, 'NotFound')
     
-    return response
+    response = table.scan()
+
+    items = response.get('Items', [])
+
     
-def getBlogs():
-    try:
-        response = table.scan()
-        result = response['Items']
-        
-        while 'LastEvaluatedKey' in response:
-            response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-            result.extend(response['Items'])
-        
-        body = {
-            'cars': result
-        }
-        return buildResponse(200, body)
-    
-    except:
-        logger.exception('Do custom error handlin here')
-        
-def buildResponse(statusCode, body=None):
+    body = {
+        'blogs': items
+    }
+
     response = {
-        'statusCode': statusCode,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-            }
-        }
-    if body is not None:
-        response['body'] = json.dumps(body, cls=CustomEncoder)
+        'statusCode': 200,
+        'body': json.dumps(body)
+    }
+
+    # All log statements are written to CloudWatch
+    print(f"response from: {event['path']} statusCode: {response['statusCode']} body: {response['body']}")
     return response
